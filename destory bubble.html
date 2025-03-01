@@ -1,0 +1,276 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>点击气泡游戏</title>
+  <style>
+    /* 重置样式 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* 设置canvas全屏 */
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #0e0e0e;
+      position: relative;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none; /* 允许点击穿透 */
+    }
+
+    /* 可选：添加标题或内容 */
+    .content {
+      position: relative;
+      z-index: 1;
+      color: white;
+      text-align: center;
+      top: 20px;
+      font-family: Arial, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <!-- 动态气泡背景 -->
+  <canvas id="bubbleCanvas"></canvas>
+  
+  <!-- 点击溅射效果 -->
+  <canvas id="splashCanvas"></canvas>
+
+  <!-- 可选内容 -->
+  <div class="content">
+    <h1>点击气泡游戏</h1>
+    <p>点击气泡以获得分数！</p>
+    <p>分数: <span id="score">0</span></p>
+  </div>
+
+  <script>
+    // 动态气泡背景
+    const bubbleCanvas = document.getElementById('bubbleCanvas');
+    const bubbleCtx = bubbleCanvas.getContext('2d');
+    let bubbles = [];
+    const bubbleCount = 10;
+    let score = 0;
+
+    function resizeCanvas() {
+      bubbleCanvas.width = window.innerWidth;
+      bubbleCanvas.height = window.innerHeight;
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class Bubble {
+      constructor() {
+        this.radius = Math.random() * 40 + 20; // 增大气泡半径
+        this.x = Math.random() * bubbleCanvas.width;
+        this.y = Math.random() * bubbleCanvas.height;
+        this.speedX = (Math.random() - 0.5) * 2; // 减慢气泡速度
+        this.speedY = (Math.random() - 0.5) * 2; // 减慢气泡速度
+        this.color = 'rgba(255, 255, 255, 0.5)'; // 增加透明度
+      }
+
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+
+        // 碰到边缘反弹
+        if (this.x + this.radius > bubbleCanvas.width || this.x - this.radius < 0) {
+          this.speedX = -this.speedX;
+        }
+        if (this.y + this.radius > bubbleCanvas.height || this.y - this.radius < 0) {
+          this.speedY = -this.speedY;
+        }
+      }
+
+      draw() {
+        bubbleCtx.beginPath();
+        bubbleCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        bubbleCtx.fillStyle = this.color;
+        bubbleCtx.fill();
+      }
+
+      isClicked(mouseX, mouseY) {
+        const distance = Math.sqrt((mouseX - this.x) ** 2 + (mouseY - this.y) ** 2);
+        return distance < this.radius;
+      }
+    }
+
+    function createBubble() {
+      bubbles.push(new Bubble());
+    }
+
+    for (let i = 0; i < bubbleCount; i++) {
+      createBubble();
+    }
+
+    function animateBubbles() {
+      bubbleCtx.clearRect(0, 0, bubbleCanvas.width, bubbleCanvas.height);
+      bubbles.forEach(bubble => {
+        bubble.update();
+        bubble.draw();
+      });
+      requestAnimationFrame(animateBubbles);
+    }
+
+    animateBubbles();
+
+    // 点击溅射效果
+    const splashCanvas = document.getElementById('splashCanvas');
+    const splashCtx = splashCanvas.getContext('2d');
+    let activeSplashes = [];
+
+    function resizeSplashCanvas() {
+      splashCanvas.width = window.innerWidth;
+      splashCanvas.height = window.innerHeight;
+    }
+
+    window.addEventListener('resize', resizeSplashCanvas);
+    resizeSplashCanvas();
+
+    class Splash {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.particles = [];
+        this.particleCount = 30;
+        this.colors = ['#FF3CAC', '#784BA0', '#2B86C5', '#FF6B6B', '#FFD700', '#00FF7F'];
+
+        for (let i = 0; i < this.particleCount; i++) {
+          this.particles.push(new Particle(this.x, this.y, this.colors[Math.floor(Math.random() * this.colors.length)]));
+        }
+      }
+
+      update() {
+        this.particles.forEach(p => p.update());
+        this.particles = this.particles.filter(p => !p.isDead());
+      }
+
+      draw() {
+        this.particles.forEach(p => p.draw());
+      }
+
+      isDead() {
+        return this.particles.length === 0;
+      }
+    }
+
+    class Particle {
+      constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.radius = Math.random() * 5 + 2;
+        this.color = color;
+        this.speedX = (Math.random() - 0.5) * 4;
+        this.speedY = (Math.random() - 0.5) * 4;
+        this.gravity = 0.05;
+        this.opacity = 1;
+        this.fade = Math.random() * 0.02 + 0.01;
+      }
+
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        this.speedY += this.gravity;
+        this.opacity -= this.fade;
+      }
+
+      draw() {
+        splashCtx.beginPath();
+        splashCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        splashCtx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+        splashCtx.fill();
+
+        // 使用彩色
+        splashCtx.beginPath();
+        splashCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        splashCtx.fillStyle = this.color;
+        splashCtx.fill();
+      }
+
+      isDead() {
+        return this.opacity <= 0;
+      }
+    }
+
+    window.addEventListener('click', function(event) {
+      const rect = bubbleCanvas.getBoundingClientRect();
+      const mouseX = event.clientX - rect.left;
+      const mouseY = event.clientY - rect.top;
+
+      bubbles.forEach((bubble, index) => {
+        if (bubble.isClicked(mouseX, mouseY)) {
+          activeSplashes.push(new Splash(bubble.x, bubble.y));
+          score += 1;
+          document.getElementById('score').innerText = score;
+          bubbles.splice(index, 1); // 移除被点击的气泡
+          createBubble(); // 生成新的气泡
+        }
+      });
+    });
+
+    function animateSplashes() {
+      splashCtx.clearRect(0, 0, splashCanvas.width, splashCanvas.height);
+      activeSplashes.forEach(splash => {
+        splash.update();
+        splash.draw();
+      });
+      activeSplashes = activeSplashes.filter(splash => !splash.isDead());
+      requestAnimationFrame(animateSplashes);
+    }
+
+    animateSplashes();
+  </script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+</body>
+</html>
