@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XQQ的厨房</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 50px;
+        }
+        .upload-box {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+        }
+        #textInput {
+            width: 100%;
+            height: 100px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">XQQ的厨房</h1>
+    <div class="upload-box" id="upload-box">拖拽到这里或点击上传</div>
+    <input type="file" id="fileInput" style="display: none;">
+    <textarea id="textInput" placeholder="在这里输入文字..."></textarea>
+    <div id="preview"></div>
+    <script>
+        const uploadBox = document.getElementById('upload-box');
+        const fileInput = document.getElementById('fileInput');
+        const preview = document.getElementById('preview');
+        const textInput = document.getElementById('textInput');
+
+        // 处理文件上传的逻辑
+        uploadBox.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadBox.classList.add('dragover');
+        });
+
+        uploadBox.addEventListener('dragleave', () => {
+            uploadBox.classList.remove('dragover');
+        });
+
+        uploadBox.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadBox.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            handleFiles(files);
+        });
+
+        uploadBox.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const files = e.target.files;
+            handleFiles(files);
+        });
+
+        function handleFiles(files) {
+            for (const file of files) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const fileContent = e.target.result;
+                    const fileElement = document.createElement('div');
+                    fileElement.textContent = `文件名: ${file.name}, 大小: ${file.size} bytes`;
+                    preview.appendChild(fileElement);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // 处理文字输入的逻辑
+        textInput.addEventListener('input', () => {
+            // 直接将输入内容显示在页面上
+            preview.textContent = textInput.value;
+        });
+    </script>
+</body>
+</html>
