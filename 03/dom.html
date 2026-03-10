@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM practice</title>
+</head>
+<body>
+    <h1 id="title">me is Gao</h1>
+    <button id="btn">Change Title</button>
+    <script>
+        let title = document.getElementById("title");
+        let btn = document.getElementById("btn");
+        btn.onclick = function() {
+            title.innerText = "fuck you DOM";
+        }
+    </script>
+</body>
+</html>

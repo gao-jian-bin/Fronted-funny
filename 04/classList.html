@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>classList</title>
+    <style>
+        .green{
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <p id="text">meme is your dad, fuck u!</p>
+    <button id="btn">Toggle</button>
+
+
+    <script>
+        let btn = document.querySelector("#btn");
+        let text = document.querySelector("#text");
+        btn.addEventListener("click", function() {
+            text.classList.toggle("green");
+        });
+    </script>
+</body>
+</html>

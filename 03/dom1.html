@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button id="add-btn">Add item</button>
+    <ul id="list"></ul>
+
+    <script>
+        let add_btn = document.getElementById("add-btn");
+        let list = document.getElementById("list");
+        add_btn.onclick = function() {
+            let li = document.createElement("li");
+            li.innerText = Math.random();
+            let del_btn = document.createElement("button");
+            del_btn.innerText = "删";
+            del_btn.onclick = function() {
+                li.remove();
+            }
+            li.appendChild(del_btn);
+
+            list.appendChild(li);
+        }
+
+
+
+
+
+    </script>
+</body>
+</html>

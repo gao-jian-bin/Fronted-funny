@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录示例</title>
+    <style>
+        :root {
+            --bg: #f4efe7;
+            --card: #fffdf9;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --accent: #d97706;
+            --accent-hover: #b45309;
+            --success: #15803d;
+            --error: #b91c1c;
+            --loading: #1d4ed8;
+            --border: #eadfce;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 24px;
+            font-family: "Segoe UI", "PingFang SC", sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top, #fff7ed 0%, transparent 45%),
+                linear-gradient(135deg, #f6efe6 0%, #efe4d4 100%);
+        }
+
+        .panel {
+            width: min(100%, 420px);
+            padding: 32px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: rgba(255, 253, 249, 0.92);
+            box-shadow: 0 20px 50px rgba(31, 41, 55, 0.08);
+        }
+
+        h1 {
+            margin: 0 0 12px;
+            font-size: 28px;
+        }
+
+        p {
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .hint {
+            margin-top: 8px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .form {
+            display: grid;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        input,
+        button {
+            border-radius: 12px;
+            font: inherit;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+            background: #fff;
+        }
+
+        input:focus {
+            outline: 2px solid rgba(217, 119, 6, 0.2);
+            border-color: var(--accent);
+        }
+
+        button {
+            padding: 14px 16px;
+            border: none;
+            color: #fff;
+            background: var(--accent);
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        button:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+            transform: none;
+        }
+
+        #statusText {
+            margin-top: 18px;
+            min-height: 28px;
+            font-weight: 600;
+        }
+
+        #statusText[data-state="success"] {
+            color: var(--success);
+        }
+
+        #statusText[data-state="error"] {
+            color: var(--error);
+        }
+
+        #statusText[data-state="loading"] {
+            color: var(--loading);
+        }
+    </style>
+</head>
+<body>
+    <main class="panel">
+        <h1>登录流程示例</h1>
+        <p>这个例子用来练习模块化、事件、DOM 更新和 async/await。</p>
+        <p class="hint">测试账号：<strong>gaojianbin</strong></p>
+
+        <section class="form">
+            <input
+                id="usernameInput"
+                type="text"
+                placeholder="请输入用户名"
+                value="gaojianbin"
+            >
+            <button id="loginBtn" type="button">点击登录</button>
+        </section>
+
+        <p id="statusText" data-state="default">等待操作...</p>
+    </main>
+
+    <script type="module" src="./index.js"></script>
+</body>
+</html>

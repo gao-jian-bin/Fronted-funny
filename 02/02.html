@@ -3,36 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>form</title>
+    <title>Modern Form</title>
+    <style>
+        /* 1. 基础重置 (真实项目必写，防止浏览器自带的间距捣乱) */
+        * {
+            box-sizing: border-box; /* 保证 padding 不会把盒子撑大 */
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 2. 页面主体 (宏观布局) */
+        body {
+            /* 经典三行居中法：把整个屏幕变成一个 Flex 容器，让表单绝对居中 */
+            display: flex;
+            justify-content: center; 
+            align-items: center;     
+            height: 100vh;           /* 视口高度 100% */
+            background-color: #f0f2f5; /* 浅灰底色 */
+            font-family: Arial, sans-serif;
+        }
+
+        /* 3. 表单容器 (核心 Flexbox 实战) */
+        form {
+            /* 把表单本身也变成一个 Flex 容器 */
+            display: flex;           
+            flex-direction: column;  /* 关键：改变主轴，让里面的元素从上往下排 */
+            gap: 15px;               /* 极其好用：直接统一定义元素之间的垂直间距，不用挨个写 margin */
+            
+            /* 盒模型：美化外观 */
+            background-color: #ffffff;
+            padding: 30px;           /* 内边距：内容不贴边 */
+            border-radius: 10px;     /* 圆角：看起来更现代 */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* 阴影：增加立体感 */
+            width: 320px;
+        }
+
+        /* 4. 表单里的每一行包裹层 */
+        .form-row {
+            display: flex;
+            align-items: center; /* 让复选框和文字在水平方向垂直居中对齐 */
+            gap: 8px; /* 框和字的间距 */
+        }
+
+        /* 5. 按钮区域 (再次使用 Flexbox 安排并排元素) */
+        .btn-group {
+            display: flex;
+            justify-content: space-between; /* 两个按钮两端对齐 */
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 45%; /* 各占将近一半的宽度 */
+        }
+
+        button[type="submit"] {
+            background-color: #007bff; /* 提交按钮给个醒目的蓝色 */
+            color: white;
+        }
+    </style>
 </head>
 <body>
-    <p>please select gender:</p>
-    <input type="radio" id="male" name="gender" value="m">
-    <label for="male">长鸡巴滴</label>
-    <br>
-    <input type="radio" id="female" name="gender" value="f">
-    <label for="female">蹲着尿尿滴</label>
-    <div></div>
     
     <form action="">
-        <div>
+        <div class="form-row">
+            <input type="radio" id="male" name="gender" value="m">
+            <label for="male">长鸡巴滴</label>
+            <input type="radio" id="female" name="gender" value="f" style="margin-left: 10px;">
+            <label for="female">蹲着尿尿滴</label>
+        </div>
+        
+        <hr style="border: 0; border-top: 1px solid #eee; width: 100%;"> <div class="form-row">
             <input type="checkbox" id="term0" name="terms">
             <label for="term0">suck me</label>
         </div>
-        <input type="checkbox" id="term1" name="terms">
-        <input type="checkbox" id="agree" name="terms" required>
-        <label for="agree">我同意服务条款</label>
+        <div class="form-row">
+            <input type="checkbox" id="term1" name="terms">
+            <label for="term1">fuck u</label>
+        </div>
+        <div class="form-row">
+            <input type="checkbox" id="agree" name="terms" required>
+            <label for="agree">我同意服务条款</label>
+        </div>
         
-        <label for="term1">fuck u</label>
-        <div>
+        <div class="form-row" style="flex-direction: column; align-items: flex-start;">
             <label for="city">live in?</label>
-            <select name="user_city" id="city" required>
+            <select name="user_city" id="city" required style="width: 100%; padding: 8px; margin-top: 5px;">
                 <option value="geijing">北京</option>
                 <option value="tianjin">天津</option>
                 <option value="shanghai">上海</option>
             </select>
         </div>
-        <div>
+
+        <div class="btn-group">
             <button type="submit">submit</button>
             <button type="button">cancel</button>
         </div>

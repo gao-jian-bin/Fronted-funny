@@ -1,0 +1,57 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM Query</title>
+</head>
+<body>
+    <h1 id="title">My Title</h1>
+    <button id="btn">Change Title</button>
+
+    <script>
+        let title = document.querySelector('#title');
+        let btn = document.querySelector('#btn');
+        btn.onclick = function() {
+            title.textContent = "敢点我？你妈了个逼？";
+        }
+    </script>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM-add</title>
+</head>
+
+<style>
+    .done {
+        text-decoration: line-through;
+        color: gray;
+    }
+</style>
+<body>
+    <input id="task">
+    <button id="add">add</button>
+    <ul id="list"></ul>
+
+    <script>
+        let input = document.querySelector("#task");
+        let add = document.querySelector("#add");
+        let list = document.querySelector("#list");
+        add.onclick = function() {
+            
+            let li = document.createElement("li");
+            li.textContent = input.value;
+            li.onclick = function() {
+                li.classList.toggle("done");
+            }
+            list.appendChild(li);
+            input.value = "";
+
+        }
+    </script>
+</body>
+</html>
