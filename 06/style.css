@@ -10,6 +10,7 @@
     --success: #15803d;
     --danger: #b91c1c;
     --chip: #f7ead7;
+    --soft: #f8f2ea;
 }
 
 * {
@@ -57,21 +58,36 @@ h1 {
 
 .intro,
 .summary,
+.detail,
 .status {
     margin: 0;
     line-height: 1.6;
 }
 
 .intro,
-.summary {
+.summary,
+.detail {
     color: var(--muted);
 }
 
-.composer {
+.composer,
+.toolbar {
     display: grid;
     grid-template-columns: 1fr auto;
     gap: 12px;
     margin-top: 24px;
+}
+
+.summary-panel {
+    margin-top: 18px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: var(--soft);
+}
+
+.detail {
+    margin-top: 4px;
 }
 
 input,
@@ -106,12 +122,16 @@ button:hover {
     transform: translateY(-1px);
 }
 
-.summary {
-    margin-top: 18px;
+.secondary-btn {
+    background: #7c2d12;
+}
+
+.secondary-btn:hover {
+    background: #651f0d;
 }
 
 .status {
-    margin-top: 6px;
+    margin-top: 10px;
     font-weight: 600;
 }
 
@@ -160,6 +180,13 @@ button:hover {
     font-weight: 700;
 }
 
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
 .action-btn {
     padding: 10px 14px;
 }
@@ -187,7 +214,12 @@ button:hover {
     }
 
     .composer,
+    .toolbar,
     .todo-item {
         grid-template-columns: 1fr;
+    }
+
+    .actions {
+        justify-content: flex-start;
     }
 }

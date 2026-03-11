@@ -11,7 +11,7 @@
         <section class="panel">
             <p class="eyebrow">Example 06</p>
             <h1>待办事项列表</h1>
-            <p class="intro">这一版先练最核心的流程：输入、添加、切换完成、删除、重新渲染。</p>
+            <p class="intro">这一版继续练习真实业务里最常见的流程：新增、切换状态、删除、筛选、统计和空状态处理。</p>
 
             <section class="composer">
                 <input
@@ -22,7 +22,20 @@
                 <button id="addBtn" type="button">添加事项</button>
             </section>
 
-            <p id="summaryText" class="summary">当前一共有 0 条待办</p>
+            <section class="toolbar" aria-label="待办工具栏">
+                <input
+                    id="searchInput"
+                    class="search-input"
+                    type="text"
+                    placeholder="搜索待办内容"
+                >
+                <button id="clearCompletedBtn" class="secondary-btn" type="button">清空已完成</button>
+            </section>
+
+            <section class="summary-panel" aria-label="待办统计">
+                <p id="summaryText" class="summary">当前一共有 0 条待办。</p>
+                <p id="detailText" class="detail">已完成 0 条，还剩 0 条未完成。</p>
+            </section>
             <p id="statusText" class="status" data-state="default">先添加一条待办试试。</p>
 
             <ul id="todoList" class="todo-list"></ul>

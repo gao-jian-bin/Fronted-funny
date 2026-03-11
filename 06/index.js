@@ -1,7 +1,10 @@
-﻿const todoInput = document.querySelector('#todoInput');
+const todoInput = document.querySelector('#todoInput');
 const addButton = document.querySelector('#addBtn');
+const searchInput = document.querySelector('#searchInput');
+const clearCompletedButton = document.querySelector('#clearCompletedBtn');
 const todoList = document.querySelector('#todoList');
 const summaryText = document.querySelector('#summaryText');
+const detailText = document.querySelector('#detailText');
 const statusText = document.querySelector('#statusText');
 
 // 给新任务分配唯一 id，避免出现重复项
@@ -14,30 +17,57 @@ let todos = [
     { id: 2, title: '自己新增一条待办事项', completed: false },
 ];
 
+// 搜索条件也是状态的一部分
+let keyword = '';
+
 // 更新顶部提示文字，并顺便切换提示状态
 function setStatus(message, type = 'default') {
     statusText.textContent = message;
     statusText.dataset.state = type;
 }
 
-// 统计当前任务总数和已完成数
+function getFilteredTodos() {
+    const normalizedKeyword = keyword.trim().toLowerCase();
+
+    if (!normalizedKeyword) {
+        return todos;
+    }
+
+    // filter 的意思是：从原数组里“筛出”符合条件的项
+    // 这里的条件就是标题里包含搜索关键字
+    return todos.filter((todo) => todo.title.toLowerCase().includes(normalizedKeyword));
+}
+
+// 统计当前任务总数、已完成数和未完成数
 function updateSummary() {
     const completedCount = todos.filter((todo) => todo.completed).length;
-    summaryText.textContent = `当前一共有 ${todos.length} 条待办，已完成 ${completedCount} 条。`;
+    const remainingCount = todos.filter((todo) => !todo.completed).length;
+
+    summaryText.textContent = `当前一共有 ${todos.length} 条待办。`;
+    detailText.textContent = `已完成 ${completedCount} 条，还剩 ${remainingCount} 条未完成。`;
 }
 
 // 根据 todos 数组，重新生成整个列表区域
 // 核心思路：先改数据，再统一渲染页面
 function renderTodos() {
-    // 如果没有任何任务，显示空状态
+    const visibleTodos = getFilteredTodos();
+
+    // 没有任何任务，显示空状态
     if (todos.length === 0) {
         todoList.innerHTML = '<li class="empty">当前没有待办事项，先添加一条。</li>';
         updateSummary();
         return;
     }
 
+    // 有任务，但搜索条件下没有命中结果
+    if (visibleTodos.length === 0) {
+        todoList.innerHTML = '<li class="empty">没有找到匹配的待办，试试别的关键词。</li>';
+        updateSummary();
+        return;
+    }
+
     // map: 把数组里的每一项任务，转换成一段 HTML
-    const todoHTML = todos.map((todo) => {
+    const todoHTML = visibleTodos.map((todo) => {
         const tagText = todo.completed ? '已完成' : '进行中';
         const toggleText = todo.completed ? '设为未完成' : '设为完成';
 
@@ -116,11 +146,50 @@ function toggleTodo(todoId) {
 
 // 删除某一项任务
 function deleteTodo(todoId) {
+    const targetTodo = todos.find((todo) => todo.id === todoId);
+
+    if (!targetTodo) {
+        setStatus('没有找到要删除的待办。', 'error');
+        return;
+    }
+
+    const shouldDelete = window.confirm(`确定删除这条待办吗？\n\n${targetTodo.title}`);
+
+    if (!shouldDelete) {
+        setStatus('已取消删除。');
+        return;
+    }
+
     // filter 会保留“不等于这个 id”的项
     // 也就是把目标项从数组里移除
     todos = todos.filter((todo) => todo.id !== todoId);
     renderTodos();
     setStatus('待办已删除。', 'success');
+}
+
+function clearCompletedTodos() {
+    const completedCount = todos.filter((todo) => todo.completed).length;
+
+    if (completedCount === 0) {
+        setStatus('当前没有已完成的待办可以清空。', 'error');
+        return;
+    }
+
+    todos = todos.filter((todo) => !todo.completed);
+    renderTodos();
+    setStatus(`已清空 ${completedCount} 条已完成待办。`, 'success');
+}
+
+function handleSearch() {
+    keyword = searchInput.value;
+    renderTodos();
+
+    if (keyword.trim()) {
+        setStatus(`正在搜索：${keyword.trim()}`);
+        return;
+    }
+
+    setStatus('已清除搜索条件。');
 }
 
 // 点击“添加按钮”时，执行添加逻辑
@@ -132,6 +201,9 @@ todoInput.addEventListener('keydown', (event) => {
         addTodo();
     }
 });
+
+searchInput.addEventListener('input', handleSearch);
+clearCompletedButton.addEventListener('click', clearCompletedTodos);
 
 // 给整个列表容器绑定一次点击事件
 // 这叫事件委托：由父元素统一处理子元素按钮的点击
